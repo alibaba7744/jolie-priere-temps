@@ -4,7 +4,7 @@ import { Clock, Sunrise, Sun, Sunset, Moon, Star } from 'lucide-react';
 import PrayerCard from '../components/PrayerCard';
 import LocationHeader from '../components/LocationHeader';
 import NextPrayerCountdown from '../components/NextPrayerCountdown';
-import { getPrayerTimesForLocation } from '../utils/prayerTimes';
+import { usePrayerTimes } from '../hooks/usePrayerTimes';
 
 interface PrayerTime {
   name: string;
@@ -18,8 +18,8 @@ const Index = () => {
   const [nextPrayer, setNextPrayer] = useState(0);
   const [currentLocation, setCurrentLocation] = useState('Paris, France');
 
-  // Récupérer les horaires de prière pour la ville sélectionnée
-  const locationTimes = getPrayerTimesForLocation(currentLocation);
+  // Utilisation du hook personnalisé pour récupérer les horaires de prière
+  const { prayerTimes: locationTimes, loading, error } = usePrayerTimes(currentLocation);
   
   const prayerTimes: PrayerTime[] = [
     {
@@ -125,6 +125,12 @@ const Index = () => {
               <Clock className="w-5 h-5" />
               <p className="text-xl font-mono">{formatTime(currentTime)}</p>
             </div>
+            {loading && (
+              <p className="text-sm opacity-75">Chargement des horaires...</p>
+            )}
+            {error && (
+              <p className="text-sm opacity-75 text-yellow-200">Horaires de secours utilisés</p>
+            )}
           </div>
         </div>
       </div>
@@ -153,6 +159,9 @@ const Index = () => {
             "Et accomplis la prière aux deux extrémités du jour et à certaines heures de la nuit"
           </p>
           <p className="text-slate-500 text-xs mt-2">Coran 11:114</p>
+          <p className="text-slate-400 text-xs mt-2">
+            Horaires fournis par l'API Aladhan
+          </p>
         </div>
       </div>
     </div>

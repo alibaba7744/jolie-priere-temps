@@ -1,4 +1,6 @@
 
+import { fetchPrayerTimes } from '../services/prayerTimesApi';
+
 interface PrayerTimesData {
   [key: string]: {
     fajr: string;
@@ -9,7 +11,8 @@ interface PrayerTimesData {
   };
 }
 
-export const prayerTimesData: PrayerTimesData = {
+// Horaires de fallback en cas d'erreur API
+export const fallbackPrayerTimesData: PrayerTimesData = {
   'Paris, France': {
     fajr: '07:15',
     dhuhr: '14:45',
@@ -82,6 +85,19 @@ export const prayerTimesData: PrayerTimesData = {
   }
 };
 
-export const getPrayerTimesForLocation = (location: string) => {
-  return prayerTimesData[location] || prayerTimesData['Paris, France'];
+export const getPrayerTimesForLocation = async (location: string) => {
+  try {
+    console.log(`Récupération des horaires de prière pour ${location}...`);
+    const realPrayerTimes = await fetchPrayerTimes(location);
+    console.log('Horaires récupérés avec succès:', realPrayerTimes);
+    return realPrayerTimes;
+  } catch (error) {
+    console.warn('Impossible de récupérer les horaires en ligne, utilisation des horaires de fallback:', error);
+    return fallbackPrayerTimesData[location] || fallbackPrayerTimesData['Paris, France'];
+  }
+};
+
+// Fonction synchrone pour les horaires de fallback
+export const getFallbackPrayerTimes = (location: string) => {
+  return fallbackPrayerTimesData[location] || fallbackPrayerTimesData['Paris, France'];
 };
