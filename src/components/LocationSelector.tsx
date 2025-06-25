@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import {
   Select,
@@ -64,25 +65,29 @@ const LocationSelector = ({ currentLocation, onLocationChange }: LocationSelecto
           <ChevronDown className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md bg-white/95 backdrop-blur-sm border-2 border-white/20 shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
+          <DialogTitle className="flex items-center gap-2 text-slate-800 text-xl">
+            <MapPin className="w-6 h-6 text-indigo-600" />
             Choisir votre ville
           </DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">
+          <DialogDescription className="text-slate-600">
             Sélectionnez votre ville pour obtenir les horaires de prière précis.
-          </p>
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-6 pt-4">
           <Select value={getCurrentLocationKey()} onValueChange={handleLocationSelect}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full h-12 bg-white border-2 border-slate-200 hover:border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all text-slate-700">
               <SelectValue placeholder="Sélectionnez une ville" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white/98 backdrop-blur-sm border-2 border-slate-200 shadow-xl z-[100]">
               {locations.map((location) => (
-                <SelectItem key={location.value} value={location.value}>
-                  {location.label}
+                <SelectItem 
+                  key={location.value} 
+                  value={location.value}
+                  className="hover:bg-indigo-50 focus:bg-indigo-100 text-slate-700 cursor-pointer py-3 px-4"
+                >
+                  <span className="font-medium">{location.label}</span>
                 </SelectItem>
               ))}
             </SelectContent>
