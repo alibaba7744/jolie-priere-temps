@@ -1,12 +1,17 @@
 
-import { MapPin } from 'lucide-react';
+import LocationSelector from './LocationSelector';
 
-const LocationHeader = () => {
+interface LocationHeaderProps {
+  currentLocation: string;
+  onLocationChange: (location: string) => void;
+}
+
+const LocationHeader = ({ currentLocation, onLocationChange }: LocationHeaderProps) => {
   return (
-    <div className="flex items-center justify-center gap-2 text-white/90">
-      <MapPin className="w-5 h-5" />
-      <span className="text-lg">Paris, France</span>
-    </div>
+    <LocationSelector 
+      currentLocation={currentLocation}
+      onLocationChange={onLocationChange}
+    />
   );
 };
 

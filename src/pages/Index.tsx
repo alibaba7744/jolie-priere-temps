@@ -1,9 +1,10 @@
 
 import { useState, useEffect } from 'react';
-import { Clock, MapPin, Sunrise, Sun, Sunset, Moon, Star } from 'lucide-react';
+import { Clock, Sunrise, Sun, Sunset, Moon, Star } from 'lucide-react';
 import PrayerCard from '../components/PrayerCard';
 import LocationHeader from '../components/LocationHeader';
 import NextPrayerCountdown from '../components/NextPrayerCountdown';
+import { getPrayerTimesForLocation } from '../utils/prayerTimes';
 
 interface PrayerTime {
   name: string;
@@ -15,37 +16,40 @@ interface PrayerTime {
 const Index = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [nextPrayer, setNextPrayer] = useState(0);
+  const [currentLocation, setCurrentLocation] = useState('Paris, France');
 
-  // Horaires de prière pour Paris (exemple)
+  // Récupérer les horaires de prière pour la ville sélectionnée
+  const locationTimes = getPrayerTimesForLocation(currentLocation);
+  
   const prayerTimes: PrayerTime[] = [
     {
       name: "Fajr",
       arabicName: "الفجر",
-      time: "06:15",
+      time: locationTimes.fajr,
       icon: Sunrise
     },
     {
       name: "Dhuhr",
       arabicName: "الظهر", 
-      time: "13:45",
+      time: locationTimes.dhuhr,
       icon: Sun
     },
     {
       name: "Asr",
       arabicName: "العصر",
-      time: "16:30",
+      time: locationTimes.asr,
       icon: Sun
     },
     {
       name: "Maghrib",
       arabicName: "المغرب",
-      time: "19:15",
+      time: locationTimes.maghrib,
       icon: Sunset
     },
     {
       name: "Isha",
       arabicName: "العشاء",
-      time: "21:00",
+      time: locationTimes.isha,
       icon: Moon
     }
   ];
@@ -75,7 +79,12 @@ const Index = () => {
     
     // Si toutes les prières sont passées, la prochaine est Fajr du lendemain
     setNextPrayer(0);
-  }, [currentTime]);
+  }, [currentTime, prayerTimes]);
+
+  const handleLocationChange = (newLocation: string) => {
+    setCurrentLocation(newLocation);
+    console.log('Changement de ville:', newLocation);
+  };
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('fr-FR', {
@@ -105,7 +114,10 @@ const Index = () => {
             <Star className="w-8 h-8 text-yellow-300" />
           </div>
           
-          <LocationHeader />
+          <LocationHeader 
+            currentLocation={currentLocation}
+            onLocationChange={handleLocationChange}
+          />
           
           <div className="mt-4 space-y-1">
             <p className="text-lg opacity-90">{formatDate(currentTime)}</p>
